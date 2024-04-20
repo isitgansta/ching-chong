@@ -1,0 +1,60 @@
+import pygame as pg
+
+class TextBox:
+    def __init__(self, x, y, WIDTH, LENGTH, background_color, text_color, ramka_color):
+        self.rect = pg.Rect(x, y, WIDTH, LENGTH)
+        self.font = pg.font.Font(None, LENGTH)
+        self.text_box = ""
+        self.background_color = background_color
+        self.text_color = text_color
+        self.ramka_color = ramka_color
+
+    def update(self, events):
+        x, y = pg.mouse.get_pos()
+        if not self.rect.collidepoint(x, y):
+            return
+        for event in events:
+            if event.type == pg.KEYDOWN:
+                if event.key == pg.K_BACKSPACE:
+                    self.text_box = self.text_box[:-1]
+                elif event.key == pg.K_RETURN:
+                    self.text_box = self.text_box.strip()
+                    return
+                else:
+                    # Check if the key is within the desired ASCII ranges
+                    key_unicode = event.unicode
+                    if key_unicode and (48 <= ord(key_unicode) <= 57 or 65 <= ord(key_unicode) <= 90 or
+                                        97 <= ord(key_unicode) <= 122 or 128 <= ord(key_unicode) <= 175 or
+                                        224 <= ord(key_unicode) <= 240):
+                        self.text_box += key_unicode
+
+    def draw(self, screen):
+        pg.draw.rect(screen, self.ramka_color, self.rect, 2)
+        text_surface = self.font.render(self.text_box, True, self.text_color)
+        screen.blit(text_surface, (self.rect.x + 5, self.rect.y + 5))
+
+# Pygame initialization
+pg.init()
+screen = pg.display.set_mode((640, 480))
+clock = pg.time.Clock()
+
+# Create a text box
+text_box = TextBox(100, 100, 200, 50, (13, 43, 124), (173, 143, 194), (183, 243, 124))
+
+# Main game loop
+game = True
+while game:
+    events = pg.event.get()
+    for event in events:
+        if event.type == pg.QUIT:
+            game = False
+
+    text_box.update(events)
+
+    screen.fill((0, 0, 0))
+    text_box.draw(screen)
+
+    pg.display.update()
+    clock.tick(60)
+
+pg.quit()
