@@ -1,0 +1,31 @@
+import pygame as pg
+class TextBox:
+    def __init__(self, x, y, WIDTH, LENGTH, background_color, text_color, ramka_color):
+        self.rect = pg.rect(x, y, WIDTH, LENGTH)
+        self.font = pg.font.Font(None, LENGTH)
+        self.text_box = str()
+        self.background_color = (13,43,124)
+        self.text_color = (173,143,194)
+        self.ramka_color = (183,243,124)
+        def update(self, events):
+            x,y = pg.mouse.get_pos()
+            if not self.rect.collidepoint(x,y):
+                return
+            for event in events:
+                if event.type() == pg.KEYDOWN:
+                    if event.key == pg.K_BACKSPACE:
+                        self.text_box = self.text_box[:-1]
+                    elif event.key == pg.K_RETURN:
+                        self.text_box = self.text_box.strip()
+                        return
+                    else:
+                        self.text_box += event.key
+    game = True
+    while game:
+        events = pg.event.get()
+        for event in events:
+        
+            if event.type == pg.QUIT:
+                game = False
+    pg.display.update()
+    clock.tick(60)
